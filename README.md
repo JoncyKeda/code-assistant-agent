@@ -56,8 +56,6 @@ Agent Controller
 
 ## ⚙️ Installation & Setup
 
-### 1️⃣ Clone the Repository
-
 ```bash
 git clone https://github.com/yourusername/code-assistant-agent.git
 cd code-assistant-agent
@@ -67,7 +65,3 @@ pip install -r requirements.txt
 OPENAI_API_KEY=your_api_key_here
 
 streamlit run app.py
-
-👨‍💻 Author
-
-Joncy Keda (AI-ML Developer)
