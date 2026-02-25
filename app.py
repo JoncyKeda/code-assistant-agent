@@ -1,35 +1,29 @@
 """
 Streamlit UI for AI Code Assistant Agent.
-Provides interface for code input, analysis, and execution.
 """
 
 import streamlit as st
+from agent.agent_controller import analyze_code
 
 
 def main() -> None:
-    """Run the Streamlit application."""
+    """Run Streamlit application."""
 
-    # Page configuration
     st.set_page_config(
         page_title="AI Code Assistant Agent",
         page_icon="🤖",
         layout="wide"
     )
 
-    # Title and description
     st.title("🤖 AI Code Assistant Agent")
-    st.write(
-        "Paste your Python code below to analyze errors, debug issues, or execute code."
-    )
+    st.write("Paste your Python code below for AI-powered debugging and analysis.")
 
-    # Code input area
     code: str = st.text_area(
-        label="Enter your Python code:",
+        "Enter your Python code:",
         height=250,
         placeholder="Example:\nprint('Hello world')"
     )
 
-    # Buttons layout
     col1, col2 = st.columns(2)
 
     with col1:
@@ -38,42 +32,26 @@ def main() -> None:
 
     with col2:
         if st.button("▶ Run Code"):
-            handle_execute(code)
+            st.info("Code execution feature will be added on Day 4.")
 
-    # Output section
     st.divider()
     st.subheader("📄 Output")
-    st.info("Results will appear here after analysis or execution.")
+    st.info("Results will appear here after analysis.")
 
 
 def handle_analyze(code: str) -> None:
     """
-    Handle code analysis action.
-
-    Args:
-        code: Python code entered by user.
+    Handle code analysis request.
     """
     if not code.strip():
         st.warning("⚠ Please enter Python code first.")
         return
 
-    # Placeholder for future AI analysis
-    st.success("✅ Code received. Analysis feature will be implemented next.")
+    with st.spinner("Analyzing code..."):
+        result = analyze_code(code)
 
-
-def handle_execute(code: str) -> None:
-    """
-    Handle code execution action.
-
-    Args:
-        code: Python code entered by user.
-    """
-    if not code.strip():
-        st.warning("⚠ Please enter Python code first.")
-        return
-
-    # Placeholder for future execution tool
-    st.success("✅ Code execution feature will be implemented next.")
+    st.success("Analysis Complete ✅")
+    st.write(result)
 
 
 if __name__ == "__main__":
