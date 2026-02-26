@@ -47,4 +47,5 @@ def analyze_code(code: str) -> str:
         temperature=0.2
     )
 
+
     return response.choices[0].message.content
