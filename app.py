@@ -1,13 +1,15 @@
 """
 Streamlit UI for AI Code Assistant Agent.
+Includes AI analysis and Python code execution.
 """
 
 import streamlit as st
 from agent.agent_controller import analyze_code
+from tools.code_runner import run_python_code
 
 
 def main() -> None:
-    """Run Streamlit application."""
+    """Run the Streamlit application."""
 
     st.set_page_config(
         page_title="AI Code Assistant Agent",
@@ -16,14 +18,19 @@ def main() -> None:
     )
 
     st.title("🤖 AI Code Assistant Agent")
-    st.write("Paste your Python code below for AI-powered debugging and analysis.")
+    st.write(
+        "Paste your Python code below to analyze errors, debug issues, "
+        "or execute the program."
+    )
 
+    # Code input
     code: str = st.text_area(
-        "Enter your Python code:",
+        label="Enter your Python code:",
         height=250,
         placeholder="Example:\nprint('Hello world')"
     )
 
+    # Buttons
     col1, col2 = st.columns(2)
 
     with col1:
@@ -32,26 +39,47 @@ def main() -> None:
 
     with col2:
         if st.button("▶ Run Code"):
-            st.info("Code execution feature will be added on Day 4.")
+            handle_execute(code)
 
     st.divider()
     st.subheader("📄 Output")
-    st.info("Results will appear here after analysis.")
+    st.caption("Results will appear above after analysis or execution.")
 
 
 def handle_analyze(code: str) -> None:
     """
-    Handle code analysis request.
+    Handle AI-based code analysis.
+
+    Args:
+        code (str): Python code entered by user.
     """
     if not code.strip():
         st.warning("⚠ Please enter Python code first.")
         return
 
-    with st.spinner("Analyzing code..."):
+    with st.spinner("Analyzing code using AI..."):
         result = analyze_code(code)
 
     st.success("Analysis Complete ✅")
     st.write(result)
+
+
+def handle_execute(code: str) -> None:
+    """
+    Execute Python code and display output.
+
+    Args:
+        code (str): Python code entered by user.
+    """
+    if not code.strip():
+        st.warning("⚠ Please enter Python code first.")
+        return
+
+    with st.spinner("Running code..."):
+        output = run_python_code(code)
+
+    st.success("Execution Complete ✅")
+    st.code(output, language="python")
 
 
 if __name__ == "__main__":
