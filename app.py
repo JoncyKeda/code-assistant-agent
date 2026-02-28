@@ -48,20 +48,23 @@ def main() -> None:
 
 def handle_analyze(code: str) -> None:
     """
-    Handle AI-based code analysis.
-
-    Args:
-        code (str): Python code entered by user.
+    Handle AI-based code analysis with pylint integration.
     """
     if not code.strip():
         st.warning("⚠ Please enter Python code first.")
         return
 
+    st.subheader("🔎 Static Code Analysis (Pylint)")
+    lint_result = check_code_quality(code)
+    st.code(lint_result)
+
+    st.subheader("🧠 AI Debugging Analysis")
+
     with st.spinner("Analyzing code using AI..."):
-        result = analyze_code(code)
+        ai_result = analyze_code(code)
 
     st.success("Analysis Complete ✅")
-    st.write(result)
+    st.write(ai_result)
 
 
 def handle_execute(code: str) -> None:
