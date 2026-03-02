@@ -1,11 +1,12 @@
 """
 Streamlit UI for AI Code Assistant Agent.
-Includes AI analysis and Python code execution.
+Includes AI analysis, pylint checking, and code execution with structured output.
 """
 
 import streamlit as st
 from agent.agent_controller import analyze_code
 from tools.code_runner import run_python_code
+from tools.syntax_checker import check_code_quality
 
 
 def main() -> None:
@@ -19,8 +20,7 @@ def main() -> None:
 
     st.title("🤖 AI Code Assistant Agent")
     st.write(
-        "Paste your Python code below to analyze errors, debug issues, "
-        "or execute the program."
+        "Analyze, debug, and execute Python code using AI-powered assistance."
     )
 
     # Code input
@@ -41,47 +41,46 @@ def main() -> None:
         if st.button("▶ Run Code"):
             handle_execute(code)
 
-    st.divider()
-    st.subheader("📄 Output")
-    st.caption("Results will appear above after analysis or execution.")
-
 
 def handle_analyze(code: str) -> None:
-    """
-    Handle AI-based code analysis with pylint integration.
-    """
+    """Perform static + AI analysis with structured output."""
     if not code.strip():
         st.warning("⚠ Please enter Python code first.")
         return
 
-    st.subheader("🔎 Static Code Analysis (Pylint)")
-    lint_result = check_code_quality(code)
-    st.code(lint_result)
+    st.divider()
+    st.header("📊 Code Analysis Results")
 
-    st.subheader("🧠 AI Debugging Analysis")
+    # Create tabs
+    tab1, tab2 = st.tabs(["🔎 Static Analysis (Pylint)", "🧠 AI Debugging"])
 
-    with st.spinner("Analyzing code using AI..."):
-        ai_result = analyze_code(code)
+    # Static Analysis
+    with tab1:
+        with st.spinner("Running pylint analysis..."):
+            lint_result = check_code_quality(code)
 
-    st.success("Analysis Complete ✅")
-    st.write(ai_result)
+        st.code(lint_result, language="text")
+
+    # AI Analysis
+    with tab2:
+        with st.spinner("Analyzing code using AI..."):
+            ai_result = analyze_code(code)
+
+        st.write(ai_result)
 
 
 def handle_execute(code: str) -> None:
-    """
-    Execute Python code and display output.
-
-    Args:
-        code (str): Python code entered by user.
-    """
+    """Execute Python code and show output."""
     if not code.strip():
         st.warning("⚠ Please enter Python code first.")
         return
+
+    st.divider()
+    st.header("⚡ Execution Output")
 
     with st.spinner("Running code..."):
         output = run_python_code(code)
 
-    st.success("Execution Complete ✅")
     st.code(output, language="python")
 
 
