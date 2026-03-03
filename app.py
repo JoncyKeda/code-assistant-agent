@@ -41,6 +41,19 @@ def main() -> None:
         if st.button("▶ Run Code"):
             handle_execute(code)
 
+def extract_corrected_code(ai_response: str) -> str | None:
+    """
+    Extract corrected Python code block from AI response.
+    """
+    if "```" in ai_response:
+        parts = ai_response.split("```")
+        if len(parts) >= 2:
+            return parts[1].replace("python", "").strip()
+
+    if "Corrected Code:" in ai_response:
+        return ai_response.split("Corrected Code:")[-1].strip()
+
+    return None
 
 def handle_analyze(code: str) -> None:
     """Perform static + AI analysis with structured output."""
@@ -51,23 +64,28 @@ def handle_analyze(code: str) -> None:
     st.divider()
     st.header("📊 Code Analysis Results")
 
-    # Create tabs
-    tab1, tab2 = st.tabs(["🔎 Static Analysis (Pylint)", "🧠 AI Debugging"])
+    tab1, tab2 = st.tabs(["🔎 Static Analysis", "🧠 AI Debugging"])
 
     # Static Analysis
     with tab1:
         with st.spinner("Running pylint analysis..."):
             lint_result = check_code_quality(code)
-
         st.code(lint_result, language="text")
 
-    # AI Analysis
+    # AI Debugging
     with tab2:
         with st.spinner("Analyzing code using AI..."):
             ai_result = analyze_code(code)
 
         st.write(ai_result)
 
+        # Extract corrected code
+        corrected_code = extract_corrected_code(ai_result)
+
+        if corrected_code:
+            st.divider()
+            st.subheader("🛠 Corrected Code")
+            st.code(corrected_code, language="python")
 
 def handle_execute(code: str) -> None:
     """Execute Python code and show output."""
