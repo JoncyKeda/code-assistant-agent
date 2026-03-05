@@ -23,15 +23,20 @@ def main() -> None:
         "Analyze, debug, and execute Python code using AI-powered assistance."
     )
 
+    # Initialize session state for code editor
+    if "code_input" not in st.session_state:
+        st.session_state.code_input = ""
+
     # Code input
     code: str = st.text_area(
         label="Enter your Python code:",
         height=250,
+        key="code_input",
         placeholder="Example:\nprint('Hello world')"
     )
 
-    # Buttons
-    col1, col2 = st.columns(2)
+    # Buttons layout
+    col1, col2, col3 = st.columns(3)
 
     with col1:
         if st.button("🔍 Analyze Code"):
@@ -40,6 +45,12 @@ def main() -> None:
     with col2:
         if st.button("▶ Run Code"):
             handle_execute(code)
+
+    with col3:
+        if st.button("🗑 Clear Code"):
+            st.session_state.code_input = ""
+            st.rerun()
+
 
 def extract_corrected_code(ai_response: str) -> str | None:
     """
@@ -54,6 +65,7 @@ def extract_corrected_code(ai_response: str) -> str | None:
         return ai_response.split("Corrected Code:")[-1].strip()
 
     return None
+
 
 def handle_analyze(code: str) -> None:
     """Perform static + AI analysis with structured output."""
@@ -86,6 +98,7 @@ def handle_analyze(code: str) -> None:
             st.divider()
             st.subheader("🛠 Corrected Code")
             st.code(corrected_code, language="python")
+
 
 def handle_execute(code: str) -> None:
     """Execute Python code and show output."""
