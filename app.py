@@ -98,7 +98,13 @@ def handle_analyze(code: str) -> None:
             st.divider()
             st.subheader("🛠 Corrected Code")
             st.code(corrected_code, language="python")
-
+            
+            st.download_button(
+                label="⬇ Download Fixed Code",
+                data=corrected_code,
+                file_name="fixed_code.py",
+                mime="text/x-python"
+            )
 
 def handle_execute(code: str) -> None:
     """Execute Python code and show output."""
