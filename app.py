@@ -66,6 +66,22 @@ def extract_corrected_code(ai_response: str) -> str | None:
 
     return None
 
+def format_ai_response(response: str) -> tuple[str, str]:
+    """
+    Extract explanation and suggestions from AI response.
+    """
+    explanation = ""
+    suggestions = ""
+
+    if "Explanation:" in response:
+        explanation = response.split("Explanation:")[-1]
+
+    if "Suggestion" in response:
+        parts = response.split("Suggestion")
+        explanation = parts[0]
+        suggestions = parts[-1]
+
+    return explanation.strip(), suggestions.strip()
 
 def handle_analyze(code: str) -> None:
     """Perform static + AI analysis with structured output."""
@@ -89,7 +105,19 @@ def handle_analyze(code: str) -> None:
         with st.spinner("Analyzing code using AI..."):
             ai_result = analyze_code(code)
 
-        st.write(ai_result)
+        explanation, suggestions = format_ai_response(ai_result)
+
+        st.subheader("❌ Error Explanation")
+
+        if explanation:
+            st.write(explanation)
+        else:
+            # fallback if parsing fails
+            st.write(ai_result)
+
+        if suggestions:
+            st.subheader("💡 Suggestions")
+            st.write(suggestions)
 
         # Extract corrected code
         corrected_code = extract_corrected_code(ai_result)
