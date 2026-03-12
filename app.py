@@ -27,9 +27,18 @@ def main() -> None:
     if "code_input" not in st.session_state:
         st.session_state.code_input = ""
 
+    uploaded_file = st.file_uploader(
+        "Upload Python file (.py)",
+        type=["py"]
+    )
+
+    if uploaded_file is not None:
+        file_content = uploaded_file.read().decode("utf-8")
+        st.session_state.code_input = file_content
+    
     # Code input
-    code: str = st.text_area(
-        label="Enter your Python code:",
+    code = st.text_area(
+        "Enter your Python code:",
         height=250,
         key="code_input",
         placeholder="Example:\nprint('Hello world')"
@@ -151,6 +160,3 @@ def handle_execute(code: str) -> None:
 
 if __name__ == "__main__":
     main()
-
-
-
