@@ -12,6 +12,9 @@ from tools.syntax_checker import check_code_quality
 def main() -> None:
     """Run the Streamlit application."""
 
+    if "history" not in st.session_state:
+        st.session_state.history = []
+
     st.set_page_config(
         page_title="AI Code Assistant Agent",
         page_icon="🤖",
@@ -22,6 +25,14 @@ def main() -> None:
     st.write(
         "Analyze, debug, and execute Python code using AI-powered assistance."
     )
+
+    st.sidebar.title("📜 Analysis History")
+
+    if st.session_state.history:
+        for i, item in enumerate(st.session_state.history[::-1]):
+            st.sidebar.write(f"{i+1}. {item[:40]}...")
+    else:
+        st.sidebar.write("No analysis yet")
 
     # Initialize session state for code editor
     if "code_input" not in st.session_state:
@@ -57,7 +68,7 @@ def main() -> None:
 
     with col3:
         if st.button("🗑 Clear Code"):
-            st.session_state.code_input = ""
+            st.session_state.clear()
             st.rerun()
 
 
@@ -113,6 +124,7 @@ def handle_analyze(code: str) -> None:
     with tab2:
         with st.spinner("Analyzing code using AI..."):
             ai_result = analyze_code(code)
+            st.session_state.history.append(code)
 
         explanation, suggestions = format_ai_response(ai_result)
 
