@@ -22,11 +22,16 @@ def main() -> None:
     )
 
     st.title("🤖 AI Code Assistant Agent")
+    st.divider()
     st.write(
         "Analyze, debug, and execute Python code using AI-powered assistance."
     )
 
     st.sidebar.title("📜 Analysis History")
+
+    if st.sidebar.button("Clear History"):
+        st.session_state.history = []
+        st.rerun()
 
     if st.session_state.history:
         for i, item in enumerate(st.session_state.history[::-1]):
@@ -110,7 +115,7 @@ def handle_analyze(code: str) -> None:
         return
 
     st.divider()
-    st.header("📊 Code Analysis Results")
+    st.subheader("📊 Code Analysis Results")
 
     tab1, tab2 = st.tabs(["🔎 Static Analysis", "🧠 AI Debugging"])
 
